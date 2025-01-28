@@ -1,6 +1,6 @@
 # NodeApp
 
-A simple Node.js application.
+A simple Node.js application which uses multiple templating engines.
 
 ## Getting Started
 
