@@ -1,6 +1,6 @@
 # NodeApp
 
-A simple Node.js application which uses multiple templating engines.
+A simple e-commerce Node.js application.
 
 ## Getting Started
 
