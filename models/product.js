@@ -26,15 +26,23 @@ module.exports = class Product {
   }
 
   save() {
+    this.id = Date.now().toString();
     getProductsFromFile((products) => {
       products.push(this);
       fs.writeFile(p, JSON.stringify(products), (err) => {
-        console.log("Error While Writing File===>", err);
+        console.log("Error While Writing products to file===>", err);
       });
     });
   }
 
   static fetchAll(cb) {
     getProductsFromFile(cb);
+  }
+
+  static findById(id, cb) {
+    getProductsFromFile((products) => {
+      const product = products.find((ele) => ele.id === id);
+      cb(product);
+    });
   }
 };
