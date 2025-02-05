@@ -9,18 +9,18 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
-  const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
-  const price = req.body.price;
-  const description = req.body.description;
-  const product = new Product(null, title, imageUrl, description, price);
-  product
-    .save()
-    .then(() => {
-      res.redirect("/");
+  const { title, imageUrl, price, description } = req.body;
+  Product.create({
+    title: title,
+    imageUrl: imageUrl,
+    price: price,
+    description: description,
+  })
+    .then((res) => {
+      console.log("Created Product in db====>", res);
     })
     .catch((error) => {
-      console.log("Error while adding product====>", error);
+      console.log("Error posAddProduct===>", error);
     });
 };
 
@@ -61,13 +61,17 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll((products) => {
-    res.render("admin/products", {
-      prods: products,
-      pageTitle: "Admin Products",
-      path: "/admin/products",
+  Product.findAll()
+    .then((products) => {
+      res.render("admin/products", {
+        prods: products,
+        pageTitle: "Admin Products",
+        path: "/admin/products",
+      });
+    })
+    .catch((error) => {
+      console.log("error while fetching admin products====>", error);
     });
-  });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
