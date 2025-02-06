@@ -1,6 +1,6 @@
 # NodeApp
 
-A simple e-commerce Node.js application.
+A simple e-commerce Node.js application using Sequelize.
 
 ## Getting Started
 
