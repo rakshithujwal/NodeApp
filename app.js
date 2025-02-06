@@ -5,12 +5,6 @@ const bodyParser = require("body-parser");
 
 const errorController = require("./controllers/error");
 
-const sequelize = require("./util/database");
-const Product = require("./models/product");
-const User = require("./models/user");
-const Cart = require("./models/cart");
-const CartItem = require("./models/cart-item");
-
 const app = express();
 
 app.set("view engine", "ejs");
@@ -18,6 +12,14 @@ app.set("views", "views");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+
+const sequelize = require("./util/database");
+const Product = require("./models/product");
+const User = require("./models/user");
+const Cart = require("./models/cart");
+const CartItem = require("./models/cart-item");
+const Order = require("./models/order");
+const OrderItem = require("./models/order-item");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -44,6 +46,9 @@ User.hasOne(Cart);
 Cart.belongsTo(User);
 Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(Product, { through: OrderItem });
 
 sequelize
   // .sync({ force: true })
@@ -53,9 +58,10 @@ sequelize
   })
   .then((user) => {
     if (!user) {
-      User.create({ name: "Raksh", email: "raksh@gmail.com" });
+      return User.create({ name: "Raksh", email: "raksh@gmail.com" });
+    } else {
+      return user;
     }
-    return user;
   })
   .then((user) => {
     return user.createCart();
