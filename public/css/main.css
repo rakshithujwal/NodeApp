@@ -23,11 +23,11 @@ form {
   text-align: center;
 }
 
-.image{
+.image {
   height: 20rem;
 }
 
-.image img{
+.image img {
   height: 100%;
 }
 
@@ -205,7 +205,16 @@ form {
   color: white;
 }
 
+.btn.danger {
+  color: red;
+  border-color: red;
+}
 
+.btn.danger:hover,
+.btn.danger:active {
+  background: red;
+  color: white;
+}
 
 @media (min-width: 768px) {
   .main-header__nav {
