@@ -1,15 +1,19 @@
-// @ts-nocheck
-/**
- * @type {import("sequelize").Sequelize}
- */
-const Sequelize = require("sequelize");
+const mongodb = require("mongodb");
 
-/**
- * @type {Sequelize}
- */
-const sequelize = new Sequelize("node-demo", "root", "raksh@123", {
-  dialect: "mysql",
-  host: "localhost",
-});
+const MongoClient = mongodb.MongoClient;
 
-module.exports = sequelize;
+const connectionString =
+  "mongodb+srv://rakshujwal:bqZfh6IiOqsNJd7h@shopnode.3vcih.mongodb.net/?retryWrites=true";
+
+const mongoConnect = (callback) => {
+  MongoClient.connect(connectionString)
+    .then((client) => {
+      console.log("Connected to ShopNode");
+      callback(client);
+    })
+    .catch((error) => {
+      console.log("Connection Failed ====>", error);
+    });
+};
+
+module.exports = mongoConnect;
