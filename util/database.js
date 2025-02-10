@@ -1,9 +1,11 @@
+require("dotenv").config();
+const DB_URL = process.env.DB_URL;
+
 const mongodb = require("mongodb");
 
 const MongoClient = mongodb.MongoClient;
 
-const connectionString =
-  "mongodb+srv://rakshujwal:bqZfh6IiOqsNJd7h@shopnode.3vcih.mongodb.net/?retryWrites=true";
+const connectionString = DB_URL;
 
 const mongoConnect = (callback) => {
   MongoClient.connect(connectionString)
