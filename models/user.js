@@ -14,6 +14,28 @@ class User {
     return db.collection("users").insertOne(this);
   }
 
+  getCart() {
+    const db = getDb();
+    const productIds = this.cart.items.map((ele) => {
+      return ele.productId;
+    });
+
+    return db
+      .collection("products")
+      .find({ _id: { $in: productIds } })
+      .toArray()
+      .then((products) => {
+        return products.map((ele) => {
+          return {
+            ...ele,
+            quantity: this.cart.items.find(
+              (cartItem) => cartItem.productId.toString() === ele._id.toString()
+            ).quantity,
+          };
+        });
+      });
+  }
+
   addToCart(product) {
     const cartProductIndex = this.cart.items.findIndex((cp) => {
       return cp.productId.toString() === product._id.toString();
