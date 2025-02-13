@@ -48,6 +48,9 @@ Ensure you have the following installed:
 ```
 NodeApp/
 ├── routes/          # Application routes
+├── controllers/     # Application logic/functionality
+├── models/          # Object Models (Classes)
+├── public/          # CSS files
 ├── utils/           # Utility functions
 ├── views/           # Templates and views (if applicable)
 ├── app.js           # Main application file
