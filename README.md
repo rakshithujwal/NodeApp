@@ -1,6 +1,6 @@
 # NodeApp
 
-A simple e-commerce Node.js application using Sequelize.
+A simple e-commerce Node.js application demonstrating different data storage approaches, including Files, Sequelize (SQL), and MongoDB. Each approach is implemented in a dedicated branch—switch between branches to explore how each one works.
 
 ## Getting Started
 
