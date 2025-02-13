@@ -15,8 +15,6 @@ const connectionString = `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@shopnode.3
 const mongoConnect = (callback) => {
   MongoClient.connect(connectionString)
     .then((client) => {
-      console.log("Connected to ShopNode");
-
       _db = client.db();
 
       callback();

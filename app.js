@@ -1,3 +1,4 @@
+// @ts-nocheck
 const path = require("path");
 
 const express = require("express");
@@ -13,20 +14,23 @@ app.set("views", "views");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+const User = require("./models/user");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-  // User.findByPk(1)
-  //   .then((user) => {
-  //     req.user = user;
-  //     next();
-  //   })
-  //   .catch((error) => {
-  //     console.log("Failed To fetch user====>", error);
-  //   });
-  next();
+  const userId = "67ac525330fb003d3eb1213b";
+
+  User.findById(userId)
+    .then((user) => {
+      console.log("user==>", user);
+      req.user = new User(user.name, user.email, user.cart, user._id);
+      next();
+    })
+    .catch((error) => {
+      console.log("Failed To fetch user====>", error);
+    });
 });
 
 app.use("/admin", adminRoutes);

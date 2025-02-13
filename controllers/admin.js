@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
@@ -11,7 +12,14 @@ exports.getAddProduct = (req, res, next) => {
 exports.postAddProduct = (req, res, next) => {
   const { title, imageUrl, price, description } = req.body;
 
-  const product = new Product(title, imageUrl, price, description);
+  const product = new Product(
+    title,
+    price,
+    description,
+    imageUrl,
+    null,
+    req.user._id
+  );
   product
     .save()
     .then((result) => {
@@ -23,75 +31,68 @@ exports.postAddProduct = (req, res, next) => {
     });
 };
 
-// exports.getEditProduct = (req, res, next) => {
-//   const editMode = req.query.edit;
-//   if (!editMode) {
-//     return res.redirect("/");
-//   }
-//   const prodId = req.params.productId;
-//   req.user
-//     .getProducts({ where: { id: prodId } })
-//     .then((products) => {
-//       const product = products[0];
-//       res.render("admin/edit-product", {
-//         pageTitle: "Edit Product",
-//         path: "/admin/edit-product",
-//         editing: editMode,
-//         product: product,
-//       });
-//     })
-//     .catch((error) => {
-//       console.log("Error while fetching product in admin edit===>", error);
-//       return res.redirect("/");
-//     });
-// };
+exports.getEditProduct = (req, res, next) => {
+  console.log("cominggggg");
+  const editMode = req.query.edit;
+  if (!editMode) {
+    return res.redirect("/");
+  }
+  const prodId = req.params.productId;
+  Product.findById(prodId)
+    .then((products) => {
+      console.log("products====>", products);
+      const product = products;
+      res.render("admin/edit-product", {
+        pageTitle: "Edit Product",
+        path: "/admin/edit-product",
+        editing: editMode,
+        product: product,
+      });
+    })
+    .catch((error) => {
+      console.log("Error while fetching product in admin edit===>", error);
+      return res.redirect("/");
+    });
+};
 
-// exports.postEditProduct = (req, res, next) => {
-//   const { productId, title, price, imageUrl, description } = req.body;
+exports.postEditProduct = (req, res, next) => {
+  const { productId, title, price, imageUrl, description } = req.body;
 
-//   Product.findByPk(productId)
-//     .then((product) => {
-//       product.title = title;
-//       product.price = price;
-//       product.imageUrl = imageUrl;
-//       product.description = description;
-//       return product.save();
-//     })
-//     .then((result) => {
-//       console.log("Updated Product====>", result);
-//       res.redirect("/admin/products");
-//     })
-//     .catch((error) => {
-//       console.log(
-//         "error while fetching product details in Post Edit product====>",
-//         error
-//       );
-//     });
-// };
+  const product = new Product(title, price, description, imageUrl, productId);
 
-// exports.getProducts = (req, res, next) => {
-//   req.user
-//     .getProducts()
-//     .then((products) => {
-//       res.render("admin/products", {
-//         prods: products,
-//         pageTitle: "Admin Products",
-//         path: "/admin/products",
-//       });
-//     })
-//     .catch((error) => {
-//       console.log("error while fetching admin products====>", error);
-//     });
-// };
+  product
+    .save()
+    .then((result) => {
+      console.log("Updated Product====>", result);
+      res.redirect("/admin/products");
+    })
+    .catch((error) => {
+      console.log(
+        "error while fetching product details in Post Edit product====>",
+        error
+      );
+    });
+};
 
-// exports.postDeleteProduct = (req, res, next) => {
-//   const prodId = req.body.productId;
-//   Product.findByPk(prodId)
-//     .then((product) => {
-//       return product.destroy();
-//     })
-//     .then((result) => console.log("Deleted Product===>", result))
-//     .catch((error) => console.log("Error deleting Product ====>", error));
+exports.getProducts = (req, res, next) => {
+  Product.fetchAll()
+    .then((products) => {
+      res.render("admin/products", {
+        prods: products,
+        pageTitle: "Admin Products",
+        path: "/admin/products",
+      });
+    })
+    .catch((error) => {
+      console.log("error while fetching admin products====>", error);
+    });
+};
 
-//   res.redirect("/admin/products");
-// };
+exports.postDeleteProduct = (req, res, next) => {
+  const prodId = req.body.productId;
+  Product.deleteById(prodId)
+    .then((result) => console.log("Deleted Product===>", result))
+    .catch((error) => console.log("Error deleting Product ====>", error));
+
+  res.redirect("/admin/products");
+};
