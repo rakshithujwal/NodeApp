@@ -13,7 +13,10 @@ exports.postLogin = (req, res, next) => {
     .then((user) => {
       req.session.isLoggedIn = true;
       req.session.user = user;
-      res.redirect("/");
+      req.session.save((err) => {
+        console.log("error while saving session==>", err);
+        res.redirect("/");
+      });
     })
     .catch((error) => {
       console.log("Failed To fetch user====>", error);
