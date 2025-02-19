@@ -3,12 +3,12 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-  name: {
+  email: {
     type: Schema.Types.String,
     required: true,
   },
-  email: {
-    type: Schema.Types.String,
+  password: {
+    type: String,
     required: true,
   },
   cart: {
