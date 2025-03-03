@@ -1,5 +1,23 @@
+require("dotenv").config();
+const crypto = require("crypto");
+
+const SEND_GRID_API_KEY = process.env.SEND_GRID_API_KEY;
+
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+
+const nodemailer = require("nodemailer");
+
+const sendgridTransport = require("nodemailer-sendgrid-transport");
+
+const transporter = nodemailer.createTransport(
+  sendgridTransport({
+    auth: {
+      api_key: SEND_GRID_API_KEY,
+    },
+  })
+);
+
 exports.getLogin = (req, res, next) => {
   let message = req.flash("error");
   if (message.length > 0) {
@@ -82,6 +100,12 @@ exports.postSignup = (req, res, next) => {
     })
     .then((result) => {
       res.redirect("/login");
+      return transporter.sendMail({
+        to: email,
+        from: "rakshithujwal11@gmail.com",
+        subject: "Sign Up Success",
+        html: "<h1>You successfully signed Up!</h1>",
+      });
     })
     .catch((err) => {
       console.log(err);
@@ -93,4 +117,77 @@ exports.postLogout = (req, res, next) => {
     console.log(err);
     res.redirect("/");
   });
+};
+
+exports.getReset = (req, res, next) => {
+  let message = req.flash("error");
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  res.render("auth/reset", {
+    path: "/reset",
+    pageTitle: "Reset Password",
+    errorMessage: message,
+  });
+};
+
+exports.postReset = (req, res, next) => {
+  crypto.randomBytes(32, (error, buffer) => {
+    if (error) {
+      return res.redirect("/reset");
+    }
+    const token = buffer.toString("hex");
+    User.findOne({ email: req.body.email })
+      .then((user) => {
+        if (!user) {
+          req.flash("error", "No account with that email found");
+          return res.redirect("/reset");
+        }
+        user.resetToken = token;
+        user.resetTokenExpiration = Date.now() + 36000000;
+        return user.save();
+      })
+      .then((result) => {
+        res.redirect("/");
+        transporter.sendMail({
+          to: req.body.email,
+          from: "rakshithujwal11@gmail.com",
+          subject: "Password Reset",
+          html: `
+          <p>You requested a password reset</p>
+          <p>Click this <a href="http://localhost:3000/reset/${token}">Link to set a new password</a></p>
+          `,
+        });
+      })
+      .catch((err) => {
+        console.lpg("error===>", err);
+      });
+  });
+};
+
+exports.getNewPassword = (req, res, next) => {
+  const token = req.params.token;
+
+  User.findOne({
+    resetToken: token,
+    resetTokenExpiration: { $gt: Date.now() },
+  })
+    .then((user) => {
+      let message = req.flash("error");
+      if (message.length > 0) {
+        message = message[0];
+      } else {
+        message = null;
+      }
+
+      res.render("auth/new-password", {
+        path: "/new-password",
+        pageTitle: "New Password",
+        errorMessage: message,
+        userId: user._id.toString(),
+      });
+    })
+    .catch((err) => console.log(err));
 };
