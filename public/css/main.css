@@ -34,7 +34,7 @@ form {
 .main-header {
   width: 100%;
   height: 3.5rem;
-  background-color: #00695c;
+  background-color: #6A1B9A;
   padding: 0 1.5rem;
   display: flex;
   align-items: center;
@@ -75,7 +75,7 @@ form {
 .main-header__item a.active,
 .main-header__item button:hover,
 .main-header__item button:active {
-  color: #ffeb3b;
+  color: #FFC107;
 }
 
 .mobile-nav {
@@ -126,7 +126,7 @@ form {
 .mobile-nav__item a.active,
 .mobile-nav__item button:hover,
 .mobile-nav__item button:active {
-  background: #00695c;
+  background: #6A1B9A;
   color: white;
   border-radius: 3px;
 }
@@ -147,8 +147,8 @@ form {
 
 #side-menu-toggle:active,
 #side-menu-toggle:hover {
-  color: #ffeb3b;
-  border-color: #ffeb3b;
+  color: #FFC107;
+  border-color: #FFC107;
 }
 
 .backdrop {
@@ -208,8 +208,8 @@ form {
   padding: 0.25rem 1rem;
   text-decoration: none;
   font: inherit;
-  border: 1px solid #00695c;
-  color: #00695c;
+  border: 1px solid #6A1B9A;
+  color: #6A1B9A;
   background: white;
   border-radius: 3px;
   cursor: pointer;
@@ -217,7 +217,7 @@ form {
 
 .btn:hover,
 .btn:active {
-  background-color: #00695c;
+  background-color: #6A1B9A;
   color: white;
 }
 
