@@ -12,7 +12,16 @@ router.get("/login", authController.getLogin);
 
 router.get("/signup", authController.getSignup);
 
-router.post("/login", authController.postLogin);
+router.post(
+  "/login",
+  [
+    body("email").isEmail().withMessage("Please enter a valid email address."),
+    body("password", "Please enter a valid password")
+      .isLength({ min: 5 })
+      .isAlphanumeric(),
+  ],
+  authController.postLogin
+);
 
 router.post("/logout", authController.postLogout);
 
@@ -23,10 +32,6 @@ router.post(
       .isEmail()
       .withMessage("Please enter a Valid Email")
       .custom((value, { req }) => {
-        // if (value === "test@test.com") {    //If you want to blacklist emails
-        //   throw new Error("This email address is forbidden");
-        // }
-        // return true;
         User.findOne({ email: value }).then((userDoc) => {
           if (userDoc) {
             return Promise.reject(
