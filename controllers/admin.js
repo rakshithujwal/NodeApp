@@ -93,6 +93,7 @@ exports.postEditProduct = (req, res, next) => {
         imageUrl: imageUrl,
         price: price,
         description: description,
+        _id: productId,
       },
       errorMessage: errors.array()[0].msg,
       validationErrors: errors.array(),
