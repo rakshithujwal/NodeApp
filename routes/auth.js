@@ -23,7 +23,6 @@ const passwordValidator = body(
   "Please enter a password with only numbers and text and at least 5 characters."
 )
   .isLength({ min: 5 })
-  .isAlphanumeric()
   .trim();
 
 const confirmPasswordValidator = body("confirmPassword")

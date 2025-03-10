@@ -1,24 +1,45 @@
 const express = require("express");
+const { body } = require("express-validator");
 
 const adminController = require("../controllers/admin");
-
 const isAuth = require("../middleware/is-auth");
 
 const router = express.Router();
 
-// /admin/add-product => GET
-router.get("/add-product", isAuth, adminController.getAddProduct);
+// Validation rules
+const productValidationRules = [
+  body("title")
+    .isString()
+    .isLength({ min: 3 })
+    .trim()
+    .withMessage("Title must be at least 3 characters long."),
+  body("imageUrl")
+    .isURL()
+    .withMessage("Please enter a valid URL for the image."),
+  body("price").isFloat().withMessage("Please enter a valid price."),
+  body("description")
+    .isLength({ min: 5, max: 200 })
+    .trim()
+    .withMessage("Description must be between 5 and 200 characters."),
+];
 
-// /admin/products => GET
+// Routes
+router.get("/add-product", isAuth, adminController.getAddProduct);
 router.get("/products", isAuth, adminController.getProducts);
 
-// /admin/add-product => POST
-router.post("/add-product", isAuth, adminController.postAddProduct);
-
+router.post(
+  "/add-product",
+  isAuth,
+  productValidationRules,
+  adminController.postAddProduct
+);
 router.get("/edit-product/:productId", isAuth, adminController.getEditProduct);
-
-router.post("/edit-product", isAuth, adminController.postEditProduct);
-
+router.post(
+  "/edit-product",
+  isAuth,
+  productValidationRules,
+  adminController.postEditProduct
+);
 router.post("/delete-product", isAuth, adminController.postDeleteProduct);
 
 module.exports = router;
