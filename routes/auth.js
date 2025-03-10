@@ -26,14 +26,14 @@ const passwordValidator = body(
   .isAlphanumeric()
   .trim();
 
-const confirmPasswordValidator = body("confirmPassword").custom(
-  (value, { req }) => {
+const confirmPasswordValidator = body("confirmPassword")
+  .custom((value, { req }) => {
     if (value !== req.body.password) {
       throw new Error("Passwords do not match.");
     }
     return true;
-  }
-);
+  })
+  .trim();
 
 // Auth Routes
 router.get("/login", authController.getLogin);
