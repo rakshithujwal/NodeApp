@@ -15,14 +15,16 @@ const emailValidator = check("email")
     if (userDoc) {
       throw new Error("E-mail already exists, please pick a different one.");
     }
-  });
+  })
+  .normalizeEmail();
 
 const passwordValidator = body(
   "password",
   "Please enter a password with only numbers and text and at least 5 characters."
 )
   .isLength({ min: 5 })
-  .isAlphanumeric();
+  .isAlphanumeric()
+  .trim();
 
 const confirmPasswordValidator = body("confirmPassword").custom(
   (value, { req }) => {
@@ -39,7 +41,10 @@ router.get("/signup", authController.getSignup);
 router.post(
   "/login",
   [
-    body("email").isEmail().withMessage("Please enter a valid email address."),
+    body("email")
+      .isEmail()
+      .withMessage("Please enter a valid email address.")
+      .normalizeEmail(),
     passwordValidator,
   ],
   authController.postLogin
