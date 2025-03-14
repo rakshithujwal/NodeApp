@@ -3,14 +3,20 @@ const Product = require("../models/product");
 const { validationResult } = require("express-validator");
 
 exports.getAddProduct = (req, res, next) => {
-  res.render("admin/edit-product", {
-    pageTitle: "Add Product",
-    path: "/admin/add-product",
-    editing: false,
-    hasError: false,
-    errorMessage: null,
-    validationErrors: [],
-  });
+  try {
+    res.render("admin/edit-product", {
+      pageTitle: "Add Product",
+      path: "/admin/add-product",
+      editing: false,
+      hasError: false,
+      errorMessage: null,
+      validationErrors: [],
+    });
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
+  }
 };
 
 exports.postAddProduct = (req, res, next) => {
@@ -21,7 +27,7 @@ exports.postAddProduct = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(422).render("admin/edit-product", {
       pageTitle: "Add Product",
-      path: "/admin/edit-product",
+      path: "/admin/add-product",
       editing: false,
       hasError: true,
       product: {
@@ -47,8 +53,10 @@ exports.postAddProduct = (req, res, next) => {
     .then((result) => {
       return res.redirect("/admin/products");
     })
-    .catch((error) => {
-      console.log("Error posAddProduct===>", error);
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -71,9 +79,10 @@ exports.getEditProduct = (req, res, next) => {
         validationErrors: [],
       });
     })
-    .catch((error) => {
-      console.log("Error while fetching product in admin edit===>", error);
-      return res.redirect("/");
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -116,11 +125,10 @@ exports.postEditProduct = (req, res, next) => {
       });
     })
 
-    .catch((error) => {
-      console.log(
-        "error while fetching product details in Post Edit product====>",
-        error
-      );
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -133,16 +141,22 @@ exports.getProducts = (req, res, next) => {
         path: "/admin/products",
       });
     })
-    .catch((error) => {
-      console.log("error while fetching admin products====>", error);
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   Product.deleteOne({ _id: prodId, userId: req.user._id })
-    .then((result) => console.log("Deleted Product===>", result))
-    .catch((error) => console.log("Error deleting Product ====>", error));
-
-  res.redirect("/admin/products");
+    .then((result) => {
+      res.redirect("/admin/products");
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };

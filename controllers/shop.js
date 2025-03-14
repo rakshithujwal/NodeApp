@@ -10,8 +10,10 @@ exports.getProducts = (req, res, next) => {
         path: "/products",
       });
     })
-    .catch((error) => {
-      console.log("Error while fetching products===>", error);
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -25,8 +27,10 @@ exports.getProduct = (req, res, next) => {
         path: "/products",
       });
     })
-    .catch((error) => {
-      console.log("Error while fetching Product===>", error);
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -39,8 +43,10 @@ exports.getIndex = (req, res, next) => {
         path: "/",
       });
     })
-    .catch((error) => {
-      console.log("error in getIndex===>", error);
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -56,8 +62,10 @@ exports.getCart = (req, res, next) => {
         products: products,
       });
     })
-    .catch((error) => {
-      console.log("Error while fetching Cart");
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -71,7 +79,11 @@ exports.postCart = (req, res, next) => {
     .then((result) => {
       res.redirect("/cart");
     })
-    .catch((error) => console.log("error==>", error));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {
@@ -82,9 +94,11 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .then(() => {
       res.redirect("/cart");
     })
-    .catch((err) =>
-      console.log("error while fetching cart in cart delete====>", err)
-    );
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.postOrder = (req, res, next) => {
@@ -113,8 +127,10 @@ exports.postOrder = (req, res, next) => {
     .then(() => {
       res.redirect("/orders");
     })
-    .catch((error) => {
-      console.log("Error when fetching cart====>", error);
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -127,7 +143,9 @@ exports.getOrders = (req, res, next) => {
         orders: orders,
       });
     })
-    .catch((error) =>
-      console.log("Error while fetching orders in getOrders====>", error)
-    );
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
