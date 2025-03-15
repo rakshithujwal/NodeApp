@@ -13,9 +13,6 @@ const productValidationRules = [
     .isLength({ min: 3 })
     .trim()
     .withMessage("Title must be at least 3 characters long."),
-  body("imageUrl")
-    .isURL()
-    .withMessage("Please enter a valid URL for the image."),
   body("price").isFloat().withMessage("Please enter a valid price."),
   body("description")
     .isLength({ min: 5, max: 200 })
