@@ -157,30 +157,53 @@ exports.getOrders = (req, res, next) => {
 exports.getInvoice = (req, res, next) => {
   const orderId = req.params.orderId;
 
-  Order.findById(orderId)
+  Order.findById(orderId) // Use findByPk for Sequelize
     .then((order) => {
       if (!order) {
-        return next(new Error("No order Found"));
+        return next(new Error("No order found"));
       }
-      if (order.user.userId.toString() !== req.user._id.toString()) {
-        return next(new Error("Unauthorized"));
+      if (order.user.userId.toString() !== req.user.id.toString()) {
+        return next(new Error("Unauthorized access"));
       }
 
-      const invoiceName = "invoice-" + orderId + ".pdf";
+      const invoiceName = `invoice-${orderId}.pdf`;
       const invoicePath = path.join("data", "invoices", invoiceName);
 
       const pdfDoc = new PDFDocument();
 
       res.setHeader("Content-Type", "application/pdf");
-      res.setHeader(
-        "Content-Disposition",
-        'inline; filename="' + invoiceName + '"'
-      );
+      res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`);
+
       pdfDoc.pipe(fs.createWriteStream(invoicePath));
       pdfDoc.pipe(res);
 
-      pdfDoc.text("Hello World");
+      // **Invoice Header**
+      pdfDoc.fontSize(26).text("Invoice", { underline: true });
+      pdfDoc.text("----------------------");
+      pdfDoc.fontSize(14).text(`Order ID: ${order.id}`);
+      pdfDoc.text(`User ID: ${order.user.userId}`);
+      pdfDoc.text("----------------------");
 
+      let totalPrice = 0;
+
+      // **Order Items**
+      if (order.items && order.items.length > 0) {
+        order.items.forEach((item) => {
+          if (item.product) {
+            pdfDoc
+              .fontSize(12)
+              .text(
+                `${item.product.title} - ${item.quantity} x $${item.product.price}`
+              );
+            totalPrice += item.quantity * item.product.price;
+          }
+        });
+      } else {
+        pdfDoc.fontSize(12).text("No items found in this order.");
+      }
+
+      pdfDoc.text("----------------------");
+      pdfDoc.fontSize(16).text(`Total Price: $${totalPrice}`, { bold: true });
       pdfDoc.end();
     })
     .catch((err) => next(err));
