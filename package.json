@@ -12,6 +12,7 @@
   "devDependencies": {
     "@types/mongoose": "^5.11.97",
     "@types/sequelize": "^4.28.20",
+    "@types/stripe": "^8.0.417",
     "nodemon": "^3.1.9"
   },
   "dependencies": {
@@ -34,6 +35,7 @@
     "nodemailer-sendgrid-transport": "^0.2.0",
     "pdfkit": "^0.16.0",
     "pug": "^2.0.3",
-    "sequelize": "^5.0.0-beta.11"
+    "sequelize": "^5.0.0-beta.11",
+    "stripe": "^7.63.1"
   }
 }
